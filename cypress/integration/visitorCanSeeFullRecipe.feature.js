@@ -50,12 +50,13 @@ describe("A visitor, by clicking a recipe card in the main view", () => {
       "February 07, 2022 16:38"
     );
   });
-  it("is expected to display a add comment field", () => {
-    cy.get("[data-cy=comment-field]").should("be.visible");
+
+  it("is expected to not display add comment field", () => {
+    cy.get("[data-cy=comment-field]").should("not.be.visible");
   });
 
-  it("is expected to display a comment feed", () => {
-    cy.get("[data-cy=comment-feed]").should("be.visible");
+  it("is expected to not display a comment feed", () => {
+    cy.get("[data-cy=comment-feed]").should("not.be.visible");
   });
 
   describe("goes back to main page", () => {
@@ -66,35 +67,12 @@ describe("A visitor, by clicking a recipe card in the main view", () => {
       cy.get("[data-cy=title]").click();
     });
 
-    it("is expected to change the url ", () => {
-      cy.url().should("not.contain", "/recipes/12");
-    });
-
     it("is expected to see a collection of recipes", () => {
       cy.get("[data-cy=recipes-list]").children().should("have.length", 7);
     });
-  });
-});
 
-describe("post a comment when hitting the enter button", () => {
-  before(() => {
-    cy.intercept("GET", "/api/recipes/**", {
-      fixture: "recipesShowResponse.json"
-    }).as("RecipeShow");
-    cy.visit("/recipes/12");
-
-    cy.intercept("POST", "/api/recipes/**/comments", {
-      fixture: "createCommentResponse"
+    it("is expected to change the url ", () => {
+      cy.url().should("not.contain", "/recipes/12");
     });
-    cy.get("[data-cy=comment-field]")
-      .type("I really enjoyed this recipe!")
-      .type("{enter}");
-  });
-
-  it("is expected to display a comment in the comment feed", () => {
-    cy.get("[data-cy=comment-feed").should(
-      "contain.text",
-      "I really enjoyed this recipe!"
-    );
   });
 });
